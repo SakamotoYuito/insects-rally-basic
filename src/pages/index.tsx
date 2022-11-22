@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { db } from "utils/firebase";
 import { useAuthContext } from "components/Header/loginObserver";
+import { ChartComponent } from "components/Chart";
 
 const Home = () => {
   const [currentAnsweredNum, setCurrentAnsweredNum] = useState(0);
@@ -30,13 +31,7 @@ const Home = () => {
   return (
     <Layout>
       <h1>ホーム</h1>
-      {/* <MapComponent area={rewardArea} /> */}
-      {/* <MyProgressBar
-        currentStatus={currentStatus}
-        currentProgress={currentProgress}
-        progressValueList={progressValueList}
-      /> */}
-      {/* <TicketComponent state={ticketData} docId={docId} /> */}
+      <ChartComponent answered={currentAnsweredNum} />
     </Layout>
   );
 };
