@@ -1,0 +1,20 @@
+.container {
+  text-align: center;
+}
+
+.start {
+  padding: 10px;
+  border: 3px dotted white;
+  border-radius: 10px;
+}
+
+.button {
+  background-color: yellow;
+  color: black;
+  border-color: yellow;
+
+  &:hover {
+    color: white;
+    background-color: green;
+  }
+}

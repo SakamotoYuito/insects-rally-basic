@@ -145,6 +145,7 @@ export const useSignup = () => {
 
       await addDoc(collection(db, "userStatus"), {
         uid: userCredential.user.uid,
+        qr: false,
         answered: 0,
         quiz: quiz,
         points: 0,

@@ -4,6 +4,7 @@ import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { db } from "utils/firebase";
 import { useAuthContext } from "components/Header/loginObserver";
 import { ChartComponent } from "components/Chart";
+import { QuizButton } from "components/QuizButton";
 
 const Home = () => {
   const [currentAnsweredNum, setCurrentAnsweredNum] = useState(0);
@@ -32,6 +33,7 @@ const Home = () => {
     <Layout>
       <h1>ホーム</h1>
       <ChartComponent answered={currentAnsweredNum} />
+      <QuizButton />
     </Layout>
   );
 };

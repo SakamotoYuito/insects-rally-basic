@@ -6,7 +6,7 @@ type Props = {
 };
 
 export const ChartComponent = ({ answered }: Props) => {
-  const colors = ["#00C49F", "#FF8042"];
+  const colors = ["#FF8042", "#FFFFFF"];
   const data = [
     { name: "クリア済み", value: answered },
     { name: "未クリア", value: 39 - answered },
