@@ -38,7 +38,7 @@ export const useSignup = () => {
   const [error, setError] = useState<string | null>(null);
   const password = process.env.NEXT_PUBLIC_PASSWORD!;
 
-  const quests = {
+  const quiz = {
     "A-1": "unanswered",
     "A-2": "unanswered",
     "A-3": "unanswered",
@@ -145,14 +145,9 @@ export const useSignup = () => {
 
       await addDoc(collection(db, "userStatus"), {
         uid: userCredential.user.uid,
-        status: "生き物好き",
-        state: "search",
-        currentPlace: "none",
         answered: 0,
-        quests: quests,
-        reward: "none",
-        ticket: "before",
-        progress: 0,
+        quiz: quiz,
+        points: 0,
         pictures: {
           mt: mtList,
           rv: rvList,
