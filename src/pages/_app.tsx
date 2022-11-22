@@ -15,7 +15,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           __html: `
             (function(d) {
               var config = {
-                kitId: '${process.env.NEXT_PUBLIC_KID_ID}',
+                kitId: '${process.env.NEXT_PUBLIC_KIT_ID}',
                 scriptTimeout: 3000,
                 async: true
               },
