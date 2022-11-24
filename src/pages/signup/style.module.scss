@@ -21,14 +21,15 @@
   color: black;
 }
 
-.link {
-  display: inline-block;
-  color: white;
-  font-weight: bold;
-  border-bottom: 2px solid white;
+.button {
+  margin: 20px;
+  background-color: yellow;
+  color: black;
+  border: none;
 
   &:hover {
-    color: yellow;
-    border-bottom: 2px solid yellow;
+    background-color: green;
+    color: white;
+    border: 1px solid black;
   }
 }

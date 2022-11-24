@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import Link from "next/link";
 import { useSignup } from "utils/firebase";
 import MyTextForm from "components/Form/TextForm";
 import styles from "./style.module.scss";
+import { Button } from "react-bootstrap";
+import { useRouter } from "next/router";
 
 export const useSignupPage = () => {
   const { handleChangeEmail, handleCreateUser, error } = useSignup();
   const [validated, setValidated] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     const form = e.currentTarget;
@@ -37,9 +39,9 @@ export const useSignupPage = () => {
         buttonStr="ユーザー登録"
         error={error}
       />
-      <Link href="/login">
-        <p className={styles.link}>すでに登録している方はこちら</p>
-      </Link>
+      <Button className={styles.button} onClick={() => router.push("/login")}>
+        ログイン(既に登録済みの方)
+      </Button>
     </div>
   );
 };

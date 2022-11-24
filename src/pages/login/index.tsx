@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { useLogin } from "utils/firebase";
 import MyTextForm from "components/Form/TextForm";
-import Link from "next/link";
 import styles from "./style.module.scss";
+import { Button } from "react-bootstrap";
+import { useRouter } from "next/router";
 
 export const useLoginPage = () => {
   const { handleChangeEmail, handleSignInUser, error } = useLogin();
   const [validated, setValidated] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     const form = e.currentTarget;
@@ -24,7 +26,6 @@ export const useLoginPage = () => {
       <div className={styles.form}>
         <MyTextForm
           validated={validated}
-          // label="ユーザーID"
           type="text"
           placeHolder="ユーザーID"
           feedback="ユーザーIDを入力してください"
@@ -36,9 +37,9 @@ export const useLoginPage = () => {
           error={error}
         />
       </div>
-      <Link href="/signup">
-        <p className={styles.link}>初めての方はこちら</p>
-      </Link>
+      <Button className={styles.button} onClick={() => router.push("/signup")}>
+        新規登録(初めての方)
+      </Button>
     </div>
   );
 };
