@@ -8,7 +8,7 @@ const Loading = () => {
 
   setTimeout(() => {
     router.push("/");
-  }, 3000);
+  }, 2000);
 
   return (
     <Layout footer={false}>
