@@ -2,13 +2,6 @@ import { useRouter } from "next/router";
 import Layout from "pages/layout";
 import { adminDB } from "utils/server";
 import { GetServerSideProps } from "next";
-import { writeUserLog, writePlaceLog, UserLog, PlaceLog } from "utils/writeLog";
-import { ParsedUrlQuery } from "querystring";
-
-type Props = {
-  congestion: number;
-  currentUids: string[];
-};
 
 const Loading = () => {
   const router = useRouter();
@@ -29,6 +22,7 @@ const Loading = () => {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const queryPram = context.query;
   const uid = queryPram.uid as string;
+  const quizId = Number(queryPram.quizId as string);
 
   const userQuerySnapshot = await adminDB
     .collection("userStatus")
@@ -41,18 +35,43 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   });
 
+  userDocData.data.quiz[quizId - 1] = "answered";
+  const userStatus = setUserStatus(userDocData.data);
+  console.log(userStatus);
+
+  const updateAnswered =
+    userDocData.data.answered < 39
+      ? userDocData.data.answered + 1
+      : userDocData.data.answered;
+
+  const updateLastQuizNumber =
+    userDocData.data.lastQuizNumber < 39
+      ? userDocData.data.lastQuizNumber + 1
+      : userDocData.data.lastQuizNumber;
+
   await adminDB
     .collection("userStatus")
     .doc(userDocData.id)
     .update({
-      answered: userDocData.data.answered + 1,
+      answered: updateAnswered,
       points: userDocData.data.points + 1,
-      lastQuizNumber: userDocData.data.lastQuizNumber + 1,
+      lastQuizNumber: updateLastQuizNumber,
+      quiz: userDocData.data.quiz,
+      status: userStatus,
     });
 
   return {
     props: {},
   };
+};
+
+const setUserStatus = (data: FirebaseFirestore.DocumentData) => {
+  console.log(data.answered);
+  if (data.answered >= 19 && data.answered < 38) {
+    return "生き物ハンター";
+  } else if (data.answered >= 38) {
+    return "生き物研究家";
+  }
 };
 
 export default Loading;

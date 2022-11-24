@@ -10,7 +10,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <title>タイトル</title>
+        <title>生き物写真展</title>
       </Head>
       <Script
         id="font"

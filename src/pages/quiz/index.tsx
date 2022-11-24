@@ -11,48 +11,45 @@ import { GetServerSideProps } from "next";
 import { adminDB } from "utils/server";
 import Button from "react-bootstrap/Button";
 import { useAuthContext } from "components/Header/loginObserver";
-import { updatePlaceState } from "utils/qr";
-
-// http://localhost:3000/quiz?area=A-1
+import { writeUserLog, UserLog } from "utils/writeLog";
 
 type Props = {
-  id: number;
-  type: "radioImage" | "radioText" | "form";
-  sentence: string;
-  choices: string[];
-  answer: number;
-  hint: string;
-  place: string;
-  point: number;
-  status: "unanswered" | "accept" | "correct" | "incorrect";
-  areaSymbol: string;
-  areaId: number;
+  quiz: {
+    id: number;
+    type: "radioImage" | "radioText" | "form";
+    sentence: string;
+    choices: string[];
+    answer: number;
+    hint: string;
+    point: number;
+    status: "unanswered" | "accept" | "correct" | "incorrect";
+  };
 };
 
-const Quiz = (props: Props) => {
+const Quiz = ({ quiz }: Props) => {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
   const [validated, setValidated] = useState(false);
   const [userAnswer, setUserAnswer] = useState<string | number>("");
+  const [userAnswerNumber, setUserAnswerNumber] = useState(0);
 
   const buttonStr = "回答する";
   const router = useRouter();
 
-  const propsData = props;
+  const propsData = quiz;
 
-  const quizNumber = propsData.areaId;
+  const quizNumber = propsData.id;
   const type = propsData.type;
   const sentence = propsData.sentence;
   const choices = propsData.choices;
   const correctNumber = propsData.answer;
   const correctAnswer = choices[correctNumber - 1];
   const hint = propsData.hint;
-  const areaSymbol = propsData.areaSymbol;
   const point = propsData.point;
   const { userInfo } = useAuthContext();
   const uid = userInfo?.uid;
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     const form = e.currentTarget;
     e.preventDefault();
     if (form.checkValidity() === false) {
@@ -66,20 +63,23 @@ const Quiz = (props: Props) => {
     } else {
       setIsCorrect(false);
     }
+    const answerResult = correctAnswer === userAnswer ? "correct" : "incorrect";
+    const userLog: UserLog = {
+      uid: uid as string,
+      state: answerResult,
+      place: "",
+    };
+    await writeUserLog(userLog);
   };
 
   const pushLoading = (isCorrect: boolean) => {
-    if (uid !== undefined) {
-      const area = router.query.area as string;
-      updatePlaceState(uid, "exit", area);
-    }
     const answerResult = isCorrect === true ? "correct" : "incorrect";
+
     router.push({
       pathname: "loading",
       query: {
         status: "answer",
         quizId: quizNumber,
-        place: areaSymbol,
         point: point,
         answer: answerResult,
         uid: uid,
@@ -112,7 +112,10 @@ const Quiz = (props: Props) => {
           buttonStr={buttonStr}
           onSubmit={(e) => handleSubmit(e)}
           answer={userAnswer}
-          onChange={(e) => setUserAnswer(e.currentTarget.value)}
+          onChange={(e) => {
+            setUserAnswer(e.currentTarget.value);
+            setUserAnswerNumber(e.currentTarget.id);
+          }}
         />
       )}
       {type === "form" && isCorrect === null && isAnswered === false && (
@@ -147,7 +150,11 @@ const Quiz = (props: Props) => {
         <>
           <div className={styles.incorrect}>
             <p className={styles.announce}>ざんねん…不正解です…</p>
-            <h2 className={styles.answer}>{hint}</h2>
+            {typeof hint === "string" ? (
+              <h2 className={styles.answer}>{hint}</h2>
+            ) : (
+              <h2 className={styles.answer}>{hint[userAnswerNumber]}</h2>
+            )}
           </div>
           <div className={styles.button}>
             <Button onClick={() => rechallenge()}>もう一度</Button>
@@ -159,14 +166,12 @@ const Quiz = (props: Props) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const area = context.query.area;
+  const area = context.query.area as string;
   const querySnapshot = await adminDB
     .collection("quiz")
-    .where("areaSymbol", "==", area)
+    .doc(`quiz-${area}`)
     .get();
-  const [quizData] = querySnapshot.docs.map((doc) => {
-    return doc.data();
-  });
+  const quizData = querySnapshot.data();
   return {
     props: {
       quiz: quizData,

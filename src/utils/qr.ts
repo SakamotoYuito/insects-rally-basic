@@ -28,7 +28,6 @@ export const updatePlaceState = (uid: string, type: string, place: string) => {
         break;
       case "exit":
         updateUids.delete(uid);
-        console.log(updateUids);
         break;
     }
     const congestion = updateUids.size;

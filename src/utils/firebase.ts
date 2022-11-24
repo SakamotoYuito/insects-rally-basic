@@ -38,74 +38,7 @@ export const useSignup = () => {
   const [error, setError] = useState<string | null>(null);
   const password = process.env.NEXT_PUBLIC_PASSWORD!;
 
-  const quiz = {
-    "A-1": "unanswered",
-    "A-2": "unanswered",
-    "A-3": "unanswered",
-    "B-1": "unanswered",
-    "B-2": "unanswered",
-    "B-3": "unanswered",
-    "C-1": "unanswered",
-    "C-2": "unanswered",
-    "C-3": "unanswered",
-    "C-4": "unanswered",
-    "D-1": "unanswered",
-    "D-2": "unanswered",
-    "E-1": "unanswered",
-    "E-2": "unanswered",
-    "E-3": "unanswered",
-    "E-4": "unanswered",
-    "F-1": "unanswered",
-    "F-2": "unanswered",
-    "G-1": "unanswered",
-    "G-2": "unanswered",
-  };
-
-  const initMtTrueList = [
-    "mt-4",
-    "mt-8",
-    "mt-20",
-    "mt-30",
-    "mt-33",
-    "mt-42",
-    "mt-44",
-    "mt-45",
-    "mt-46",
-    "mt-47",
-    "mt-48",
-    "mt-49",
-  ];
-
-  const initRvTrueList = [
-    "rv-4",
-    "rv-18",
-    "rv-29",
-    "rv-32",
-    "rv-33",
-    "rv-36",
-    "rv-38",
-    "rv-39",
-    "rv-41",
-    "rv-43",
-    "rv-45",
-    "rv-46",
-    "rv-47",
-    "rv-49",
-    "rv-52",
-  ];
-
-  const initGdTrueList = [
-    "gd-1",
-    "gd-4",
-    "gd-5",
-    "gd-9",
-    "gd-12",
-    "gd-14",
-    "gd-24",
-    "gd-29",
-    "gd-31",
-    "gd-32",
-  ];
+  const quiz = new Array<string>(39).fill("unanswered");
 
   const handleChangeEmail = (e: any) => {
     setError(null);
@@ -127,26 +60,16 @@ export const useSignup = () => {
         mode: "none",
         createdAt: Timestamp.now(),
       });
-      const mtList = new Array<boolean>(49).fill(false);
-      initMtTrueList.forEach((pictureId) => {
-        const id = Number(pictureId.split("-")[1]);
-        if (mtList[id - 1] === false) mtList[id - 1] = true;
-      });
-      const rvList = new Array<boolean>(55).fill(false);
-      initRvTrueList.forEach((pictureId) => {
-        const id = Number(pictureId.split("-")[1]);
-        if (rvList[id - 1] === false) rvList[id - 1] = true;
-      });
-      const gdList = new Array<boolean>(33).fill(false);
-      initGdTrueList.forEach((pictureId) => {
-        const id = Number(pictureId.split("-")[1]);
-        if (gdList[id - 1] === false) gdList[id - 1] = true;
-      });
+      const mtList = new Array<boolean>(49).fill(true);
+      const rvList = new Array<boolean>(55).fill(true);
+      const gdList = new Array<boolean>(33).fill(true);
 
       await addDoc(collection(db, "userStatus"), {
         uid: userCredential.user.uid,
-        qr: false,
+        qr: true,
         answered: 0,
+        lastQuizNumber: 0,
+        status: "生き物好き",
         quiz: quiz,
         points: 0,
         pictures: {
