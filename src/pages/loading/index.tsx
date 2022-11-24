@@ -35,20 +35,20 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   });
 
-  userDocData.data.quiz[quizId - 1] = "answered";
-  const userStatus = setUserStatus(userDocData.data);
-
   const userQuizState = userDocData.data.quiz[quizId - 1];
 
   const updateAnswered =
-    userDocData.data.answered < 39 && userQuizState === "unanswered"
+    userDocData.data.answered < 39
       ? userDocData.data.answered + 1
       : userDocData.data.answered;
 
   const updateLastQuizNumber =
-    userDocData.data.lastQuizNumber < 39 && userQuizState === "unanswered"
+    userDocData.data.lastQuizNumber < 39
       ? userDocData.data.lastQuizNumber + 1
       : userDocData.data.lastQuizNumber;
+
+  userDocData.data.quiz[quizId - 1] = "answered";
+  const userStatus = setUserStatus(userDocData.data);
 
   await adminDB
     .collection("userStatus")
