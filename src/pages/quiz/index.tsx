@@ -16,10 +16,6 @@ import { updatePlaceState } from "utils/qr";
 // http://localhost:3000/quiz?area=A-1
 
 type Props = {
-  quiz: QuizDataForDisplay[];
-};
-
-type QuizDataForDisplay = {
   id: number;
   type: "radioImage" | "radioText" | "form";
   sentence: string;
@@ -38,12 +34,12 @@ const Quiz = (props: Props) => {
   const [isAnswered, setIsAnswered] = useState(false);
   const [validated, setValidated] = useState(false);
   const [userAnswer, setUserAnswer] = useState<string | number>("");
-  const [currentQuizNumber, setCurrentQuizNumber] = useState<number>(1);
+  // const [currentQuizNumber, setCurrentQuizNumber] = useState<number>(1);
 
   const buttonStr = "回答する";
   const router = useRouter();
 
-  const propsData = props.quiz[currentQuizNumber - 1];
+  const propsData = props;
 
   const quizNumber = propsData.areaId;
   const type = propsData.type;
@@ -73,11 +69,11 @@ const Quiz = (props: Props) => {
     }
   };
 
-  const toNextQuiz = () => {
-    setCurrentQuizNumber(currentQuizNumber + 1);
-    setIsCorrect(null);
-    setIsAnswered(false);
-  };
+  // const toNextQuiz = () => {
+  //   setCurrentQuizNumber(currentQuizNumber + 1);
+  //   setIsCorrect(null);
+  //   setIsAnswered(false);
+  // };
 
   const pushLoading = (isCorrect: boolean) => {
     if (uid !== undefined) {
@@ -150,11 +146,7 @@ const Quiz = (props: Props) => {
             <h2 className={styles.answer}>正解：{correctAnswer}</h2>
           </div>
           <div className={styles.button}>
-            {currentQuizNumber < 5 ? (
-              <Button onClick={() => toNextQuiz()}>次のクイズ</Button>
-            ) : (
-              <Button onClick={() => pushLoading(true)}>報酬を受け取る</Button>
-            )}
+            <Button onClick={() => pushLoading(true)}>報酬を受け取る</Button>
           </div>
         </>
       )}
@@ -162,7 +154,7 @@ const Quiz = (props: Props) => {
         <>
           <div className={styles.incorrect}>
             <p className={styles.announce}>ざんねん…不正解です…</p>
-            <h2 className={styles.answer}>ヒント：{hint}</h2>
+            <h2 className={styles.answer}>{hint}</h2>
           </div>
           <div className={styles.button}>
             <Button onClick={() => rechallenge()}>もう一度</Button>
@@ -174,20 +166,17 @@ const Quiz = (props: Props) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const quizDataList: object[] = [];
   const area = context.query.area;
   const querySnapshot = await adminDB
     .collection("quiz")
     .where("areaSymbol", "==", area)
-    .orderBy("areaId")
     .get();
-  querySnapshot.forEach((doc) => {
-    const quizData = doc.data();
-    quizDataList.push(quizData);
+  const [quizData] = querySnapshot.docs.map((doc) => {
+    return doc.data();
   });
   return {
     props: {
-      quiz: quizDataList,
+      quiz: quizData,
     },
   };
 };
