@@ -34,7 +34,6 @@ const Quiz = (props: Props) => {
   const [isAnswered, setIsAnswered] = useState(false);
   const [validated, setValidated] = useState(false);
   const [userAnswer, setUserAnswer] = useState<string | number>("");
-  // const [currentQuizNumber, setCurrentQuizNumber] = useState<number>(1);
 
   const buttonStr = "回答する";
   const router = useRouter();
@@ -68,12 +67,6 @@ const Quiz = (props: Props) => {
       setIsCorrect(false);
     }
   };
-
-  // const toNextQuiz = () => {
-  //   setCurrentQuizNumber(currentQuizNumber + 1);
-  //   setIsCorrect(null);
-  //   setIsAnswered(false);
-  // };
 
   const pushLoading = (isCorrect: boolean) => {
     if (uid !== undefined) {

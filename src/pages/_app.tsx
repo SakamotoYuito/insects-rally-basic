@@ -4,10 +4,14 @@ import type { AppProps } from "next/app";
 import "../utils/firebase";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { AuthProvider } from "components/Header/loginObserver";
+import Head from "next/head";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
+      <Head>
+        <title>タイトル</title>
+      </Head>
       <Script
         id="font"
         strategy="afterInteractive"
