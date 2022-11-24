@@ -22,7 +22,7 @@ type Props = {
     answer: number;
     hint: string;
     point: number;
-    status: "unanswered" | "accept" | "correct" | "incorrect";
+    status: "unanswered" | "answered";
   };
 };
 
